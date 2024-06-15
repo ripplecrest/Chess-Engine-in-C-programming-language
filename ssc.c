@@ -127,6 +127,8 @@ const U64 not_ab_file = 18229723555195321596ULL;
 U64 pawn_attacks[2][64];
 // knight attack table
 U64 knight_attacks[64]; //does not depend on the colour.
+//king attack table
+U64 king_attacks[64];
 
 //generate pawn attack 
 U64 mask_pawn_attack(int side, int square){
@@ -184,6 +186,37 @@ U64 mask_knight_attack(int square){
     return attacks;
 
 }
+//generates king attacks
+U64 mask_king_attack(int square){
+    // result attack bitboard
+    U64 attacks = 0ULL;
+
+    //piece bitboard
+    U64 bitboard = 0ULL;
+
+    //set piece on the bitboard
+    set_bit(bitboard, square);
+    // generate king attacks
+    if (bitboard >> 8 )attacks |= (bitboard >> 8);
+    if ((bitboard >> 9) & not_h_file )attacks |= (bitboard >> 9);
+    if ((bitboard >> 7) & not_a_file )attacks |= (bitboard >> 7);
+    if ((bitboard >> 1) & not_h_file) attacks |= (bitboard >> 1);
+
+    // backwards attack
+    if (bitboard << 8 )attacks |= (bitboard << 8);
+    if ((bitboard << 9) & not_a_file )attacks |= (bitboard << 9);
+    if ((bitboard << 7) & not_h_file )attacks |= (bitboard << 7);
+    if ((bitboard << 1) & not_a_file) attacks |= (bitboard << 1);
+    return attacks;
+
+}
+// mask bishop attacks
+U64 mask_bishop_attacks(int square){
+     // result attack bitboard
+    U64 attacks = 0ULL;
+
+    return attacks;
+}
 
 //init leaper pirces attacks
 void init_leapers_attacks(){
@@ -195,6 +228,9 @@ void init_leapers_attacks(){
 
         //init knight attack
         knight_attacks[square] = mask_knight_attack(square);
+
+        // init king attacks
+        king_attacks[square] = mask_king_attack(square);
     }
 }
 
@@ -202,10 +238,11 @@ int main(){
     //init leaper piece attacks
     init_leapers_attacks();
     // loop over 64 board squares
-     for (int square = 0; square < 64; square++)
-        print_bitboard(knight_attacks[square]);
+      for (int square = 0; square < 64; square++)
+         print_bitboard(king_attacks[square]);
     //print_bitboard(mask_knight_attack(e3));
   
+    //print_bitboard(mask_king_attack(h4));
     
     return 0;
 }
