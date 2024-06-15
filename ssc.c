@@ -193,7 +193,7 @@ void init_leapers_attacks(){
         pawn_attacks[white][square] = mask_pawn_attack(white, square);
         pawn_attacks[black][square] = mask_pawn_attack(black, square);
 
-        //init knight attacks
+        //init knight attack
         knight_attacks[square] = mask_knight_attack(square);
     }
 }
