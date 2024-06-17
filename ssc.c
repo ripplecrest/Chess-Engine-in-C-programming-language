@@ -8,6 +8,18 @@
 #define set_bit(bitboard, square) (bitboard |= (1ULL << square)) // add 1 to the position in the bitboard
 #define pop_bit(bitboard, square) (set_bit(bitboard, square)? bitboard ^= (1ULL << square): 0;) // makes the bit at the position 0 again.
 
+//funtion to count bit within bitboard
+static inline int count_bits(U64 bitboard){
+    // bit count
+    int count = 0;
+    //consecutively reset least significant 1st bit
+    while(bitboard){
+        count++;
+        // reset least significant 1st bit
+        bitboard &= bitboard -1;
+    }
+    return count;
+}
 
 //board squares
 enum{
@@ -337,8 +349,9 @@ int main(){
     set_bit(block, d2);
     set_bit(block, b4);
     set_bit(block, g4);
-    print_bitboard(block);
-    print_bitboard(rook_attacks_on_the_fly(d4, block));
-    
+    print_bitboard(block); 
+    // print_bitboard(block &= block - 1); bit count implementation, this will remove the first bit on the bitboard table
+
+    printf("bitcount = %d \n", count_bits(block) );
     return 0;
 }
