@@ -6,7 +6,7 @@
 // set/get/pop macros
 #define get_bit(bitboard, square) (bitboard &(1ULL << square)) 
 #define set_bit(bitboard, square) (bitboard |= (1ULL << square)) // add 1 to the position in the bitboard
-#define pop_bit(bitboard, square) (set_bit(bitboard, square)? bitboard ^= (1ULL << square): 0;) // makes the bit at the position 0 again.
+#define pop_bit(bitboard, square) (set_bit(bitboard, square)? bitboard ^= (1ULL << square): 0) // makes the bit at the position 0 again.
 
 //funtion to count bit within bitboard
 static inline int count_bits(U64 bitboard){
@@ -346,29 +346,37 @@ void init_leapers_attacks(){
         king_attacks[square] = mask_king_attack(square);
     }
 }
+// set occupancies
+U64 set_occupancy(int index, int bits_in_mask, U64 attack_mask){
+    // init occupancy map
+    U64 occupancy = 0ULL;
+    // loop over range of bits withi attack mask
+    for(int count = 0; count < bits_in_mask; count++){
+        // get LS1B index of attack mask
+        int square = get_ls1b_index(attack_mask);
+        // pop LS1B in attack map
+        pop_bit(attack_mask, square);
+
+        // make sure that occupancy is on the board
+        if(index & (1 << count)){
+            //poppulate occupancy map
+            occupancy |= (1ULL << square);
+        }
+    }
+
+    return occupancy;
+}
 
 int main(){
     //init leaper piece attacks
     init_leapers_attacks();
-    // loop over 64 board squares
-    //  for (int square = 0; square < 64; square++)
-    //       print_bitboard(mask_rook_attacks(square));
-    //print_bitboard(mask_knight_attack(e3));
-    // init occupancy bitboard
-    U64 block = 0ULL;
-    set_bit(block, d7);
-    set_bit(block, d2);
-    set_bit(block, b4);
-    set_bit(block, g4);
-    set_bit(block, b1);
-    //print_bitboard(block); 
-    // print_bitboard(block &= block - 1); bit count implementation, this will remove the first bit on the bitboard table
-    //print_bitboard((block & -block)-1);
-    printf("index = %d coordinates = %s \n", get_ls1b_index(block), square_to_coordinates[get_ls1b_index(block)]);
-
-    // test bitboard
-    U64 test = 0ULL;
-    set_bit(test, get_ls1b_index(block));
-    print_bitboard(test);
+    // mask piece attack at given square
+    U64 attack_mask = mask_rook_attacks(h4);
+    
+       
+    
+    //init occupancy
+    U64 occupancy = set_occupancy(4095, count_bits(attack_mask), attack_mask);
+    print_bitboard(occupancy);
     return 0;
 }
