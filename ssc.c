@@ -395,7 +395,7 @@ U64 set_occupancy(int index, int bits_in_mask, U64 attack_mask){
 unsigned int state = 1804289383;
 
 // generate 32bit pseudo legal numbers 
-unsigned int get_random_number(){
+unsigned int get_random_U32_number(){
     // get current state
     unsigned int number = state;
     // XOR shift algorithm (in 32 bits)
@@ -406,15 +406,31 @@ unsigned int get_random_number(){
     state = number; // updaet random number state
     return number;
 }
+// generate 64 bit pseudo randowm number
+U64 get_random_U64_number(){
+    // define 4 random numbers;
+    U64 n1,n2,n3,n4;
 
+    //init randowm numbers slicing 16 bits from MS1b side
+    n1 = (U64)(get_random_U32_number() & 0xFFFF);
+    n2 = (U64)(get_random_U32_number() & 0xFFFF);
+    n3 = (U64)(get_random_U32_number() & 0xFFFF);
+    n4 = (U64)(get_random_U32_number() & 0xFFFF);
+
+    return n1 | (n2 << 16 )| (n3 << 32) | (n4 << 48);
+}
+// generate magic number candidate
+U64 generate_magic_number(){
+    return get_random_U64_number() & get_random_U64_number() & get_random_U64_number();
+}
 
 int main(){
     //init leaper piece attacks
     init_leapers_attacks();
-    printf("%ud\n", get_random_number());
-    printf("%ud\n", get_random_number());
-    printf("%ud\n", get_random_number());
-    printf("%ud\n", get_random_number());
-    printf("%ud\n", get_random_number());
+
+    print_bitboard((U64)get_random_U32_number());
+    print_bitboard((U64)(get_random_U32_number()& 0xFFFF )); // slice upper (from MS1B side) 16 bits
+    print_bitboard(get_random_U64_number());
+    print_bitboard(generate_magic_number());
     return 0;
 }
