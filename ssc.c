@@ -391,18 +391,30 @@ U64 set_occupancy(int index, int bits_in_mask, U64 attack_mask){
     return occupancy;
 }
 
+// pseudo random number state
+unsigned int state = 1804289383;
+
+// generate 32bit pseudo legal numbers 
+unsigned int get_random_number(){
+    // get current state
+    unsigned int number = state;
+    // XOR shift algorithm (in 32 bits)
+    number ^= number << 13;
+    number ^= number >> 17;
+    number ^= number << 5;
+
+    state = number; // updaet random number state
+    return number;
+}
+
+
 int main(){
     //init leaper piece attacks
     init_leapers_attacks();
-    // mask piece attack at given square
-    U64 attack_mask = mask_rook_attacks(h4);
-    for(int rank = 0; rank<8; rank++){
-        for(int file = 0; file < 8; file++){
-            int square = rank*8 + file;
-            printf("%d, ", count_bits(mask_rook_attacks(square)));
-        }
-        printf("\n");
-    }
-
+    printf("%ud\n", get_random_number());
+    printf("%ud\n", get_random_number());
+    printf("%ud\n", get_random_number());
+    printf("%ud\n", get_random_number());
+    printf("%ud\n", get_random_number());
     return 0;
 }
