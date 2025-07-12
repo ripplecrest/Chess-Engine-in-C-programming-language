@@ -1,5 +1,5 @@
 all:
-	gcc -oFast ssc.c -o ssc
+	gcc -oFast ssc.c -o chess_engine
 	
 debug:	
-	gcc ssc.c -o ssc
+	gcc ssc.c -o chess_engine
